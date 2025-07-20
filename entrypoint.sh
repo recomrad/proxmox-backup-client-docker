@@ -2,35 +2,37 @@
 
 cleanup() {
 	echo "Exiting..."
-	exit 0
+	exit 1
 }
 
 trap cleanup SIGINT
 trap cleanup SIGTERM
 
-# Exit if BACKUP_TARGETS is not set
-if [ -z "$BACKUP_TARGETS" ]; then
-	echo "BACKUP_TARGETS is not set. Set in the form of 'root.pxar:/' or several separated by space, like 'etc.pxar:/etc var.pxar:/var'. Exiting."
+# Exit if no PBS_PASSWORD is set
+if [ -z "$PBS_PASSWORD" ]; then
+	echo "PBS_PASSWORD is not set. Exiting."
 	exit 1
 fi
 
-# Exit if no CRON_SCHEDULE is set
-if [ -z "$CRON_SCHEDULE" ]; then
-	echo "CRON_SCHEDULE is not set. Set in the form of Cron timing, e.g. '00 03 * * *' for 3am every day.  Exiting."
+# Exit if no PBS_REPOSITORY is set
+if [ -z "$PBS_REPOSITORY" ]; then
+	echo "PBS_REPOSITORY is not set. Exiting."
 	exit 1
 fi
 
-env > /cronfile
-echo "$CRON_SCHEDULE /do_backup.sh > /proc/1/fd/1 2>&1" >> /cronfile
-crontab /cronfile
-rm -f /cronfile
-cron
+# Exit if no PBS_FINGERPRINT is set
+if [ -z "$PBS_FINGERPRINT" ]; then
+	echo "PBS_FINGERPRINT is not set. Exiting."
+	exit 1
+fi
 
-echo "Backup targets: $BACKUP_TARGETS"
-echo "Cron schedule: $CRON_SCHEDULE"
+# Exit if no STORAGEPATH is set
+if [ -z "$STORAGEPATH" ]; then
+	echo "STORAGEPATH is not set. Exiting."
+	exit 1
+fi
+
 echo "Starting backup service..."
 
-# Loop forever
-while true; do
-	sleep 1
-done
+/do_backup.sh > /proc/1/fd/1 2>&1
+exit 0
