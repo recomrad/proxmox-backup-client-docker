@@ -35,7 +35,7 @@ docker run --name proxmox-backup-job \
   --tmpfs /tmp \
   -v /path/to/host/data:/mnt/mydata:ro \
   -v /path/to/backup/script.sh:/do_backup.sh:ro \
-  ghcr.io/fred-drake/proxmox-backup-client:latest
+  ghcr.io/recomrad/proxmox-backup-client-docker:latest
 ```
 
 Example backup script:
